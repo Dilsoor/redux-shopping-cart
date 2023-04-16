@@ -1,26 +1,41 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import "./App.css";
-import Cards from "./components/cards/Cards";
+import Cart from "./components/cards/Cart";
+import Login from "./components/Login/Login";
 import Nav from "./components/Nav/Nav";
-import { calculate } from "./feature/cart/cartSlice";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const { total, cart } = useSelector((store) => store.cart);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(calculate());
-  }, [cart]);
+  const [user, setUser] = useState(null);
 
   return (
     <div>
-      <Nav />
-      <Cards />
-      <div className="container">
-        <p className="total-price">Total Price:{total}</p>
-      </div>
+     
+      <BrowserRouter>
+        <Nav />
+        <Routes>
+          <Route path="/" element={<Login setUser={setUser} />} />
+          <Route path="/cart" element={
+            <ProtectedRoute user={user}>
+              <Cart user={user}/>
+            </ProtectedRoute>
+          } />
+        </Routes>
+      </BrowserRouter>
+      {/* <Routes>
+        <Route path="/" element={<Login setUser={setUser} />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute user={user}>
+              <Dashboard user={user} />
+            </ProtectedRoute>
+          }
+        />
+      </Routes> */}
     </div>
   );
 }
